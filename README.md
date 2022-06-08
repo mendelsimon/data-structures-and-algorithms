@@ -4,3 +4,4 @@ This repository contains my exploration in implementing common data structures a
 So far, this project contains:
  - Data Structures
     - Linked List
+    - Min-Heap
