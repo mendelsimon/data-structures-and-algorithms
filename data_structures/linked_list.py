@@ -14,28 +14,33 @@ class LinkedList(Generic[T]):
         self.length: int = 0
 
         if iterable:
-            self._init_from_iterable(iterable)
+            self.extend(iterable)
 
-    def _init_from_iterable(self, iterable: Iterable):
+    def extend(self, iterable: Iterable) -> None:
+        """Add all elements from a given iterable to the LinkedList"""
         iterator = iter(iterable)
-        
-        # Set up the head and tail
-        try:
-            data = next(iterator)
-        except StopIteration:
-            return self
-        node = LinkedListNode(data)
-        self.head = node
-        self.tail = node
-        self.length = 1
+
+        # Handle the special case of adding the first node
+        if self.head is None:
+            try:
+                data = next(iterator)
+            except StopIteration:
+                return
+            node = LinkedListNode(data)
+            self.head = node
+            self.tail = node
+            self.length = 1
+        else:
+            assert self.tail is not None # The tail is always set together with the head
+            node = self.tail
 
         # Append the rest of the data to the LinkedList
         while True:
             try:
                 data = next(iterator)
             except StopIteration:
-                # Return the LinkedList once all the data has been added to it
-                return self
+                # Return once all the data has been added to the LinkedList
+                return
             prev_node = node
             node = LinkedListNode(data)
             prev_node.next = node

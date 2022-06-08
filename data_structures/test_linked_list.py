@@ -33,6 +33,26 @@ class LinkedListTest(unittest.TestCase):
         ll.append(2)
         self.assertEqual(list(ll), [1, 2])
         self.assertEqual(len(ll), 2)
+    
+    def test_extend(self):
+        ll = LinkedList()
+        ll.extend(self.test_sequence)
+        self.assertEqual(list(ll), self.test_sequence)
+        self.assertEqual(len(ll), len(self.test_sequence))
+        ll.extend(self.test_sequence)
+        self.assertEqual(list(ll), self.test_sequence + self.test_sequence)
+        self.assertEqual(len(ll), len(self.test_sequence) * 2)
+
+    def test_extend_empty(self):
+        ll = LinkedList()
+        ll.extend([])
+        ll.extend([])
+        ll.extend([])
+        self.assertEqual(len(ll), 0)
+        self.assertEqual(list(ll), [])
+        ll.extend([1])
+        self.assertEqual(len(ll), 1)
+        self.assertEqual(list(ll), [1])
 
     def test_prepend(self):
         ll = LinkedList()
