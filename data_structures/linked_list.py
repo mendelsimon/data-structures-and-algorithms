@@ -1,16 +1,24 @@
-from typing import Iterable, TypeVar, Generic
+"""Linked list implementation"""
 
-T = TypeVar('T')
+from typing import Iterable, Iterator, TypeVar, Generic
+
+T = TypeVar("T")  # pylint: disable=invalid-name
+
 
 class LinkedListNode(Generic[T]):
+    """Raw linked list node"""
+
     def __init__(self, data: T) -> None:
         self.data: T = data
-        self.next: LinkedListNode[T]|None = None
+        self.next: LinkedListNode[T] | None = None
+
 
 class LinkedList(Generic[T]):
-    def __init__(self, iterable: Iterable|None = None) -> None:
-        self.head: LinkedListNode[T]|None = None
-        self.tail: LinkedListNode[T]|None = None
+    """Full linked list implementation with all expected methods"""
+
+    def __init__(self, iterable: Iterable | None = None) -> None:
+        self.head: LinkedListNode[T] | None = None
+        self.tail: LinkedListNode[T] | None = None
         self.length: int = 0
 
         if iterable:
@@ -31,7 +39,8 @@ class LinkedList(Generic[T]):
             self.tail = node
             self.length = 1
         else:
-            assert self.tail is not None # The tail is always set together with the head
+            # The tail is always set together with the head, so it cannot be None here
+            assert self.tail is not None
             node = self.tail
 
         # Append the rest of the data to the LinkedList
@@ -70,26 +79,27 @@ class LinkedList(Generic[T]):
         self.head = LinkedListNode(data)
         self.head.next = prev_head
         self.length += 1
-        
+
     def remove(self, idx: int) -> T:
         """Remove and return the element at the given index"""
         # Make sure the index is not out-of-bounds
         if idx < 0 or idx > self.length - 1:
-            raise IndexError('idx out of bounds')
+            raise IndexError
 
         self.length -= 1
 
         # Handle the special case of removing the head
         if idx == 0:
-            assert self.head is not None # Due to our bounds check
+            assert self.head is not None  # Due to our bounds check
             node = self.head
             self.head = self.head.next
             return node.data
-        
+
         node_before_idx = self._get_node(idx - 1)
 
         # Retrieve the data and remove the node
-        assert node_before_idx is not None # Due to the bounds check inside _get_node()
+        assert node_before_idx is not None  # Due to bounds check in _get_node()
+        assert node_before_idx.next is not None  # Due to bounds check in _get_node()
 
         # Handle the special case of removing the tail
         if node_before_idx.next.next is None:
@@ -97,15 +107,15 @@ class LinkedList(Generic[T]):
 
         data = node_before_idx.next.data
         node_before_idx.next = node_before_idx.next.next
-        
+
         return data
 
     def insert(self, idx: int, data: T) -> None:
         """Insert data at the given index"""
         # Make sure the index is not out-of-bounds
         if idx < 0 or idx > self.length:
-            raise IndexError('idx out of bounds')
-        
+            raise IndexError
+
         # Handle the special cases of inserting at the head or tail
         if idx == 0:
             return self.prepend(data)
@@ -128,18 +138,19 @@ class LinkedList(Generic[T]):
         node = self._get_node(idx)
         node.data = data
 
-    def _get_node(self, idx: int):
+    def _get_node(self, idx: int) -> LinkedListNode[T]:
         """Get the node at the given index"""
         # Make sure the index is not out-of-bounds
         if idx < 0 or idx > self.length - 1:
-            raise IndexError('idx out of bounds')
-        
+            raise IndexError
+
         # Find the node at idx
         node = self.head
         for _ in range(idx):
-            assert node is not None
+            assert node is not None  # This is guaranteed by our bounds check
             node = node.next
 
+        assert node is not None  # This is guaranteed by our bounds check
         return node
 
     def __getitem__(self, idx: int) -> T:
@@ -148,22 +159,11 @@ class LinkedList(Generic[T]):
     def __setitem__(self, idx: int, data: T) -> None:
         return self.set(idx, data)
 
-    def __iter__(self) -> 'LinkedListNodeIterator':
-        return LinkedListNodeIterator(self.head)
+    def __iter__(self) -> Iterator[T]:
+        node = self.head
+        while node is not None:
+            yield node.data
+            node = node.next
 
     def __len__(self) -> int:
         return self.length
-
-class LinkedListNodeIterator:
-    def __init__(self, node: LinkedListNode[T]|None) -> None:
-        self.node: LinkedListNode[T]|None = node
-
-    def __next__(self):
-        if self.node is None:
-            raise StopIteration
-        data = self.node.data
-        self.node = self.node.next
-        return data
-
-    def __iter__(self):
-        return LinkedListNodeIterator(self.node)
