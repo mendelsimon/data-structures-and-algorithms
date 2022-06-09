@@ -5,3 +5,4 @@ So far, this project contains:
  - Data Structures
     - Linked List
     - Min-Heap
+    - Queue
