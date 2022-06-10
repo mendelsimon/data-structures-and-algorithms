@@ -1,4 +1,4 @@
-"""Min-heap tests"""
+"""Tests for min_heap.py"""
 
 import unittest
 from data_structures.min_heap import MinHeap
@@ -50,7 +50,10 @@ class MinHeapTest(unittest.TestCase):
         self.assertEqual(list(heap), [])
 
     def test_remove_and_peek_empty(self):
-        """Test that the appropriate errors are raised why trying to peek or remove from an empty min-heap"""
+        """
+        Test that the appropriate errors are raised why trying to
+        peek or remove from an empty min-heap
+        """
         heap = MinHeap()
         self.assertRaises(IndexError, lambda h: h.peek(), heap)
         self.assertRaises(IndexError, lambda h: h.remove_min(), heap)
