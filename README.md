@@ -6,3 +6,4 @@ So far, this project contains:
     - Linked List
     - Min-Heap
     - Queue
+    - Stack
